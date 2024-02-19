@@ -152,53 +152,92 @@ const App = () => {
     const getInitialData = pagination(userStories, 1, userStoriesPageSize);
     setUserStoriesRenderData(getInitialData);
     setIsLoadingUserStories(false);
+
+    setIsLoadingUserPost(true);
+    const getInitialDataPost = pagination(userPosts, 1, userPostPageSize);
+    setUserPostRenderData(getInitialDataPost);
+    setIsLoadingUserPost(false);
   }, []);
 
   return (
     <SafeAreaView>
-      <View style={globalStyle.header}>
-        <Title title={'SPARK'} />
-        <TouchableOpacity style={globalStyle.messageIcon}>
-          <FontAwesomeIcon icon={faEnvelope} color={'#898DAE'} size={20} />
-          <View style={globalStyle.messagecNumContainer}>
-            <Text style={globalStyle.messageNum}>2</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-      <View style={globalStyle.userStoryContainer}>
-        <FlatList
-          onEndReachedThreshold={0.5}
-          onEndReached={() => {
-            if (isLoadingUserStories) {
-              return;
-            }
-            setIsLoadingUserStories(true);
-            const contentToAppend = pagination(
-              userStories,
-              userStoriesCurrentPage + 1,
-              userStoriesPageSize,
-            );
-            if (contentToAppend.length > 0) {
-              setUserStoriesCurrentPage(userStoriesCurrentPage + 1);
-              setUserStoriesRenderData(prev => [...prev, ...contentToAppend]);
-            }
-            setIsLoadingUserStories(false);
-          }}
-          showsHorizontalScrollIndicator={false}
-          horizontal={true}
-          data={userStoriesRenderData}
-          renderItem={({item}) => (
-            <UserStory
-              key={'userStory' + item.id}
-              firstName={item.firstName}
-              profileImage={item.profileImage}
-            />
-          )}
-        />
-      </View>
       <View>
         <FlatList
-          data={userPosts}
+          ListHeaderComponent={
+            <>
+              <View style={globalStyle.header}>
+                <Title title={'SPARK'} />
+                <TouchableOpacity style={globalStyle.messageIcon}>
+                  <FontAwesomeIcon
+                    icon={faEnvelope}
+                    color={'#898DAE'}
+                    size={20}
+                  />
+                  <View style={globalStyle.messagecNumContainer}>
+                    <Text style={globalStyle.messageNum}>2</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View style={globalStyle.userStoryContainer}>
+                <FlatList
+                  onEndReachedThreshold={0.5}
+                  onEndReached={() => {
+                    if (isLoadingUserStories) {
+                      return;
+                    }
+                    setIsLoadingUserStories(true);
+                    const contentToAppend = pagination(
+                      userStories,
+                      userStoriesCurrentPage + 1,
+                      userStoriesPageSize,
+                    );
+                    if (contentToAppend.length > 0) {
+                      setUserStoriesCurrentPage(userStoriesCurrentPage + 1);
+                      setUserStoriesRenderData(prev => [
+                        ...prev,
+                        ...contentToAppend,
+                      ]);
+                    }
+                    setIsLoadingUserStories(false);
+                  }}
+                  showsHorizontalScrollIndicator={false}
+                  horizontal={true}
+                  data={userStoriesRenderData}
+                  renderItem={({item}) => (
+                    <UserStory
+                      key={'userStory' + item.id}
+                      firstName={item.firstName}
+                      profileImage={item.profileImage}
+                    />
+                  )}
+                />
+              </View>
+            </>
+          }
+          showsVerticalScrollIndicator={false}
+          onEndReached={() => {
+            //When user scrolling too past, it doesn't do
+            //anything to prevent over-load. so it's
+            //doing nothing when It's already loading new page and scrolling.
+            if (isLoadingUserPost) {
+              return;
+            }
+
+            setIsLoadingUserPost(true);
+            const contentToAppendPost = pagination(
+              userPosts,
+              userPostCurrentPage + 1,
+              userPostPageSize,
+            );
+
+            if (contentToAppendPost.length > 0) {
+              setUserPostCurrentPage(userPostCurrentPage + 1);
+              setUserPostRenderData(prev => [...prev, ...contentToAppendPost]);
+            }
+            setIsLoadingUserPost(false);
+          }}
+          onEndReachedThreshold={0.5}
+          data={userPostRenderData}
           renderItem={({item}) => (
             <UserPost
               firstName={item.firstName}
@@ -208,6 +247,7 @@ const App = () => {
               comments={item.comments}
               bookmarks={item.bookmarks}
               profileImage={item.profileImage}
+              location={item.location}
             />
           )}
         />

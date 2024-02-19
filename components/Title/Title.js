@@ -1,9 +1,15 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import {getFontFamily} from '../../assets/fonts/inter/helper';
+import {Text} from 'react-native';
+import style from './style';
 
-const title = () => {
-  return;
-  <Text style={{fontSize: 50, style.fontFamily: getFontFamily('Inter', '500')}}>
-    Test
-  </Text>;
+const Title = props => {
+  return <Text style={style.title}>{props.title}</Text>;
 };
-return title;
+
+Title.propTypes = {
+  title: PropTypes.string.isRequired,
+};
+
+export default Title;

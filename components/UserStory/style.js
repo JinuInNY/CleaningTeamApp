@@ -1,12 +1,17 @@
-import React from 'react';
 import {StyleSheet} from 'react-native';
 import {getFontFamily} from '../../assets/fonts/inter/helper';
 
 const style = StyleSheet.create({
-  title: {
+  storyContainer: {
+    marginRight: 20,
+    marginLeft: 20,
+  },
+  firstName: {
+    fontFamily: getFontFamily('Inter', '500'),
+    fontSize: 14,
     color: '#022150',
-    fontFamily: getFontFamily('Inter', '600'),
-    fontSize: 24,
+    marginTop: 8,
+    textAlign: 'center',
   },
 });
 
